@@ -1,0 +1,59 @@
+@startuml Restaurante
+skinparam classAttributeIconSize 0
+
+class Restaurant {
+   - String name
+   - String address
+}
+
+class Table {
+    Integer tableNumber
+    Integer capacity
+    Boolean isOccupied
+}
+
+class MenuItem {
+    String name
+    Double price
+}
+
+class OrderItem {
+    Integer quantity
+}
+
+class Order {
+    Integer orderNumber
+}
+
+enum OrderStatus {
+    PENDING
+    IN_PROGRESS
+    DELIVERED
+}
+
+class Menu {
+    String name
+}
+
+class Employee {
+   - String name
+
+   + Employee(String name)
+   + String getName()
+}
+
+' Relaciones
+' o-- : Agregación -> Parte de
+' *-- : Composición -> Parte de
+' -- : Asociación -> Usa, Necesita, Esta relacionado
+' --> : Dependencia
+
+Restaurant "1" o-- "1..*" Table
+Restaurant "1" o-- "2..50" Employee 
+Restaurant "1" *-- "1..*" Menu
+Table "1" -- "0..*" Order
+Menu "1" *-- "1" MenuItem : menuItems
+MenuItem "1" -- "0..*" OrderItem
+Order "1" *-- "1..*" OrderItem
+Order --> OrderStatus : status
+@enduml
