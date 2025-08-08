@@ -1,5 +1,6 @@
 import model.Employee;
 import model.Menu;
+import model.MenuItem;
 import model.Order;
 import model.OrderItem;
 import model.Restaurant;
@@ -8,30 +9,52 @@ import model.Table;
 public class RestaurantApp {
     public static void main(String[] args) throws Exception {
 
-        Restaurant restaurant1 = new Restaurant("La buena mesa", "Calle Falsa 123", null, null, null);
-        System.out.println("Nombre del restaurante: " + restaurant1.getName());
-        System.out.println("Dirección del restaurante: " + restaurant1.getAddress());
+        MenuItem item1 = new MenuItem(null, "Pasta", 12.99);
+        MenuItem item2 = new MenuItem(null, "Pizza", 15.49);
+        MenuItem item3 = new MenuItem(null, "Salad", 9.99);
+        MenuItem[] menuItems = { item1, item2, item3 };
+        Menu menu = new Menu(null, null, menuItems);
 
-        Employee employee1 = new Employee(restaurant1, "Juan Pérez");
-        System.out.println("Nombre del empleado: " + employee1.getNombre());
+        // 3. Crear un array de Table y usarlo para crear un objeto Restaurant
+        Table table1 = new Table(1, 4, null);
+        Table table2 = new Table(2, 2, null);
+        Table[] tables = { table1, table2 };
 
-        Table table1 = new Table(1, 7, restaurant1);
-        Table table2 = new Table(2, 4, restaurant1);
+        // 4. Crear un array de Employee y usarlo para el mismo Restaurant
+        Employee emp1 = new Employee("Carlos", "Mesero");
+        Employee emp2 = new Employee("Laura", "Cocinera");
+        Employee[] employees = { emp1, emp2 };
 
-        System.out.println("Número de mesa: " + table1.getTableNumber());
-        System.out.println("Capacidad de la mesa: " + table1.getCapacity());
-        System.out.println("¿Está ocupada la mesa? " + table1.isOccupied());
-        Menu menuItem1 = new Menu("Menú Principal", restaurant1, null);
-        System.out.println("Nombre del menú: " + menuItem1.getName());
-        System.out.println("Restaurante del menú: " + menuItem1.getRestaurant().getName());
-        Order order1 = new Order(table1, 5);
-        System.out.println("Número de pedido: " + order1.getOrderNumber());
-        System.out.println("Estado del pedido: " + order1.getStatus());
-        System.out.println("Mesa del pedido: " + order1.getTable().getTableNumber());
+        Restaurant restaurant = new Restaurant("La Buena Comida", "123 Calle Principal", tables, menu, employees);
+        System.out.println("Bienvenido a " + restaurant.getName() + " en " + restaurant.getAddress());
+        // 5. Mostrar el menú
+        restaurant.displayMenu();
+        // 6. Crear un objeto Order (máximo 5 ítems)
+        Order order = new Order(table2, 5);
+        // 7. Buscar MenuItems en el Menu y crear OrderItems
+        MenuItem foundItem1 = menu.findItem("Pizza");
+        MenuItem foundItem2 = menu.findItem("Pasta");
 
-        OrderItem orderItem1 = new OrderItem(order1, null);
-        System.out.println("Cantidad del ítem del pedido: " + orderItem1.getQuantity());
-        System.out.println("Ítem del menú del ítem del pedido: " + orderItem1.getMenuItem());
+        OrderItem orderItem1 = new OrderItem(order, foundItem1);
+        OrderItem orderItem2 = new OrderItem(order, foundItem2, 2);
+        // 8. Añadir OrderItems al Order
+        order.addItem(orderItem1);
+        order.addItem(orderItem2);
 
+        // 9. Buscar una mesa en el Restaurant y asignar el Order
+        Table foundTable = restaurant.findTable(1);
+        foundTable.assignOrder(order);
+
+        // (Si hay relación bidireccional: el Order también sabe a qué mesa pertenece)
+        order.setTable(foundTable);
+
+        // 10. Mostrar detalles y total del pedido
+        order.displayDetails();
+        System.out.println("Total a pagar: $" + order.calculateTotal());
+
+        // 11. Comprobar relación bidireccional (opcional)
+        if (order.getTable() != null) {
+            System.out.println("Este pedido pertenece a la mesa #" + order.getTable().getTableNumber());
+        }
     }
 }

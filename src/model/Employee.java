@@ -2,14 +2,14 @@ package model;
 
 public class Employee {
     private String nombre;
-    private Restaurant restaurant;
+    private String restaurant;
 
-    public Employee(Restaurant restaurant, String nombre) {
+    public Employee(String restaurant, String nombre) {
         this.restaurant = restaurant;
         this.nombre = nombre;
     }
 
-    public Restaurant getRestaurant() {
+    public String getRestaurant() {
         return restaurant;
     }
 
